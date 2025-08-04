@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import argparse
 from confluent_kafka import Consumer, KafkaException
+from confluent_kafka.admin import AdminClient
 import hashlib
+import requests
 import json
 import sqlite3
 import sys
@@ -14,6 +16,9 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Kafka topic inspector and deduplication tool.")
     parser.add_argument('--bootstrap-servers', required=True, help='Comma-separated list of Kafka bootstrap servers')
     parser.add_argument('--topic', help='Kafka topic to scan. Not required if --list-topics or --check-lag is used.')
+    parser.add_argument('--overview', action='store_true', help='Display a high-level overview of the cluster.')
+    parser.add_argument('--schema-registry-url', help='URL for the Schema Registry to include in overview.')
+    parser.add_argument('--connect-url', help='URL for Kafka Connect to include in overview.')
     parser.add_argument('--list-topics', action='store_true', help='List topics interactively and exit.')
     parser.add_argument('--check-lag', action='store_true', help='Check consumer group lag for a topic.')
     parser.add_argument('--search', help='Search for a pattern in message values.')
@@ -53,8 +58,8 @@ def list_and_select_topic(consumer):
     """Lists topics, with interactive search if there are many."""
     try:
         metadata = consumer.list_topics(timeout=10)
-        topics = sorted(metadata.topics.keys())
-        
+        topics = sorted(list(set(metadata.topics.keys())))
+
         if len(topics) <= 50:
             print("Available topics:")
             for topic in topics:
@@ -98,6 +103,61 @@ def list_and_select_topic(consumer):
         # Restore terminal settings on any other error
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, original_settings)
         print(f"An unexpected error occurred: {e}")
+
+def get_cluster_overview(admin_client, schema_registry_url, connect_url):
+    """Fetches and displays a high-level overview of the Kafka cluster."""
+    print("Fetching cluster overview...")
+    
+    try:
+        # Basic cluster metadata
+        metadata = admin_client.list_topics(timeout=10)
+        topics = metadata.topics
+        topic_count = len(topics)
+        partition_count = sum(len(t.partitions) for t in topics.values())
+        broker_count = len(metadata.brokers)
+
+        # Consumer groups
+        groups_future = admin_client.list_consumer_groups()
+        groups_result = groups_future.result()
+        group_count = len(groups_result.valid)
+
+        # Schema Registry Subjects
+        subject_count = "N/A"
+        if schema_registry_url:
+            try:
+                response = requests.get(f"{schema_registry_url}/subjects", timeout=5)
+                response.raise_for_status()
+                subject_count = len(response.json())
+            except (requests.RequestException, json.JSONDecodeError) as e:
+                subject_count = f"Error: {e}"
+
+        # Kafka Connect Connectors
+        connector_count = "N/A"
+        if connect_url:
+            try:
+                response = requests.get(f"{connect_url}/connectors", timeout=5)
+                response.raise_for_status()
+                connector_count = len(response.json())
+            except (requests.RequestException, json.JSONDecodeError) as e:
+                connector_count = f"Error: {e}"
+
+        # Display results
+        print("\n--- Kafka Cluster Overview ---")
+        print(f"{'Metric':<20} {'Value':<10}")
+        print("-" * 30)
+        print(f"{'Topics':<20} {topic_count:<10}")
+        print(f"{'Partitions':<20} {partition_count:<10}")
+        print(f"{'Brokers':<20} {broker_count:<10}")
+        print(f"{'Consumer Groups':<20} {group_count:<10}")
+        print(f"{'Subjects':<20} {subject_count:<10}")
+        print(f"{'Connectors':<20} {connector_count:<10}")
+        print("-" * 30)
+
+    except KafkaException as e:
+        print(f"Error fetching cluster overview: {e}", file=sys.stderr)
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}", file=sys.stderr)
+
 
 def check_consumer_lag(consumer, topic, group_id):
     """Checks and prints the consumer lag for a given topic and group."""
@@ -205,12 +265,16 @@ def search_messages(consumer, topic, pattern, use_regex, max_messages):
 def main():
     args = parse_args()
     
-    conf = {
-        'bootstrap.servers': args.bootstrap_servers,
-        'group.id': args.group_id,
-        'auto.offset.reset': args.start
-    }
-    consumer = Consumer(conf)
+    conf = {'bootstrap.servers': args.bootstrap_servers}
+    
+    if args.overview:
+        admin_client = AdminClient(conf)
+        get_cluster_overview(admin_client, args.schema_registry_url, args.connect_url)
+        return
+
+    # For other operations, initialize the consumer
+    consumer_conf = {**conf, 'group.id': args.group_id, 'auto.offset.reset': args.start}
+    consumer = Consumer(consumer_conf)
 
     if args.list_topics:
         list_and_select_topic(consumer)
